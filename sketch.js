@@ -1,5 +1,5 @@
 var database, position;
-var balloon,balloonImage1,balloonImage2;
+var balloon,balloonImage1,balloonImage2,background;
 
 
 function preload(){
@@ -12,61 +12,64 @@ function preload(){
 
 
 function setup() {
-  database=firebase.database();
+  database = firebase.database();
   console.log(database)
   createCanvas(1500,700);
 
-  balloon=createSprite(250,450,150,150);
-  balloon.addAnimation("hotAirBalloon",balloonImage1);
-  balloon.scale=0.04;
+  balloon=createSprite(550,450,450,450);
+  balloon.addAnimation("balloon",balloonImage1);
+  balloon.scale= 0.60;
 
-  var ballonPosition = database.ref("balloon/height")
-  ballonPosition.on("value",readPositon,showError)
+  var balloonPosition = database.ref('balloon/height');
+  balloonPosition.on("value",readPosition, showError);
 
 }
 
 
 function draw() {
   background(bg);
-  
+
   if(keyDown(LEFT_ARROW)){
-    updateHeight(-10,0)
-    balloon.addAnimation("HotAirBallon",balloonImage2)
-
-  }
-  else if(keyDown(RIGHT_ARROW)){
-    updateHeight(10,0)
-    balloon.addAnimation("HotAirBalloon",balloonImage2)
-
-  }
-  else if(keyDown(UP_ARROW)){
-    updateHeight(0,-10)
-    balloon.addAnimation("HotAirBalloon",balloonImage2)
-    balloon.scale = ballon.scale -0.01
- 
+    balloon.x = balloon.x-10
+    balloon.addAnimation("hotAirBalloon",balloonImage2);
+    
   }
   else if(keyDown(DOWN_ARROW)){
-    updateHeight(0,10)
-    balloon.addAnimation("HotAirBalloon",balloonImage2)
+    balloon.y = balloon.y+10
+    balloon.addAnimation("hotAirBalloon",balloonImage2);
     balloon.scale = balloon.scale +0.01
-
   }
-
+  else if(keyDown(UP_ARROW)){
+    balloon.y = balloon.y-10
+    balloon.addAnimation("hotAirBalloon",balloonImage2);
+    balloon.scale = balloon.scale -0.01
+   
+  }
+    else if(keyDown(RIGHT_ARROW)){
+      balloon.x = balloon.x+10
+      balloon.addAnimation("hotAirBalloon",balloonImage2);
+    }
+     
+    
   drawSprites();
 }
 
-function undateHeight(x,y){
-  database.ref("balloon/height").set({
-    "x" : height.x + x,
-    "y" : height.y + y
+function updateHeight(x,y){
+  database.ref('balloon/Height').set({
+    'x' : height.x + x ,
+    'y' : height.y + y
   })
 }
+
 function readHeight(data){
   height = data.val()
-  console.log(height)
-  balloon.x = height.x
-  ballon.y = height.y
+  balloon.x = height.x;
+  balloon.y = height.y;
+}   
+
+function readPosition(){
 }
+
 function showError(){
   console.log("Error in writing to the database")
 }
